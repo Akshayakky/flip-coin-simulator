@@ -54,6 +54,47 @@ function calculatePercentage(){
 	echo ${combinationAndPercentArray[@]}
 }
 
+#FUNCTION TO SORT COMBINATION ARRAY PERCENTAGE WISE IN DESCENDING ORDER
+function sortArray(){
+	local combinationAndPercentArray=("$@")
+	local NO_OF_RECORDS=${#combinationAndPercentArray[@]}
+	for (( i=0; i<$NO_OF_RECORDS; i++ ))
+	do
+		for (( j=0; j<$(($NO_OF_RECORDS-1)); j++ ))
+		do
+			firstElement=$(echo ${combinationAndPercentArray[j]} | cut -f 2 -d ":")
+			secondElement=$(echo ${combinationAndPercentArray[j+1]} | cut -f 2 -d ":")
+			if (( $(echo "$firstElement < $secondElement" |bc -l) ))
+			then
+				temp=${combinationAndPercentArray[j]}
+				combinationAndPercentArray[j]=${combinationAndPercentArray[j+1]}
+				combinationAndPercentArray[j+1]=$temp
+			fi
+		done
+	done
+	echo ${combinationAndPercentArray[@]}
+}
+
+#FUNCTION TO FIND WINNING COMBINATION/COMBINATIONS
+function findWinningCombination(){
+	array=("$@")
+	i=0
+	winningCombination=${array[0]}
+	while [ $i -lt $((${#array[@]}-1)) ]
+	do
+		first=$(echo "${array[0]}" | cut -f 2 -d ":")
+		second=$(echo "${array[i+1]}" | cut -f 2 -d ":")
+		if (( $(echo "$first == $second" |bc -l) ))
+		then
+			winningCombination=$winningCombination" "${array[i+1]}
+		else
+			break
+		fi
+		((i++))
+	done
+	echo $winningCombination
+}
+
 #READING CHOICE
 read -p "Enter Choice - 1.SINGLET 2.DOUBLET 3.TRIPLET : " choice
 
@@ -79,3 +120,5 @@ esac
 
 combinationArray=($(dictionaryToArray ${!combinationDictionary[@]} ${combinationDictionary[@]}))
 combinationArray=($(calculatePercentage ${combinationArray[@]}))
+combinationArray=($(sortArray ${combinationArray[@]}))
+winningCombination=($(findWinningCombination ${combinationArray[@]}))
