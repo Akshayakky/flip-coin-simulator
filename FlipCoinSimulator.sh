@@ -4,11 +4,12 @@
 IS_HEAD=0
 SINGLET=1
 DOUBLET=2
+TRIPLET=3
 
 #DECLARE DICTIONARY
 declare -A combinationDictionary
 
-#FUNCTION TO SIMULATE SINGLET AND DOUBLET COMBINATION
+#FUNCTION TO SIMULATE SINGLET, DOUBLET AND TRIPLET COMBINATION
 function flipCoin(){
 	local NO_OF_COINS=$2
 	for (( index=1; index<=$1; index++ ))
@@ -54,18 +55,21 @@ function calculatePercentage(){
 }
 
 #READING CHOICE
-read -p "Enter Choice - 1.SINGLET 2.DOUBLET : " choice
+read -p "Enter Choice - 1.SINGLET 2.DOUBLET 3.TRIPLET : " choice
 
 #READING VALUE FOR NO OF ITERATIONS
 read -p "Enter No of Iterations : " numberIteration
 
-#USING CASE STATEMENT FOR SINGLET OR DOUBLET COMBINATION
+#USING CASE STATEMENT FOR SINGLET, DOUBLET OR TRIPLET COMBINATION
 case $choice in
 		$SINGLET)
 			flipCoin $numberIteration $SINGLET
 				;;
 		$DOUBLET)
 			flipCoin $numberIteration $DOUBLET
+				;;
+		$TRIPLET)
+			flipCoin $numberIteration $TRIPLET
 				;;
 		*) 
 			echo Enter Correct Choice
@@ -75,4 +79,3 @@ esac
 
 combinationArray=($(dictionaryToArray ${!combinationDictionary[@]} ${combinationDictionary[@]}))
 combinationArray=($(calculatePercentage ${combinationArray[@]}))
-
